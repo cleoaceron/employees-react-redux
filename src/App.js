@@ -1,26 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { history } from "./helpers";
+import { alertActions } from "./actions";
+import { PrivateRoute } from "./components";
+import { Dashboard } from "./pages/Dashboard";
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    history.listen((location, action) => {
+      // clear alert on location change
+      this.props.clearAlerts();
+    });
+  }
+
+  render() {
+    const { alert } = this.props;
+    return (
+      <div>
+        <Router history={history}>
+          <Switch>
+            {/* <PrivateRoute exact path="/" component={Dashboard} /> */}
+            {/* <PrivateRoute exact path="/users/:id" component={View} /> */}
+            <Route path="/" component={Dashboard} />
+            <Redirect from="*" to="/" />
+          </Switch>
+        </Router>
+      </div>
+    );
+  }
 }
 
-export default App;
+function mapState(state) {
+  const { alert } = state;
+  return { alert };
+}
+
+const actionCreators = {
+  clearAlerts: alertActions.clear,
+};
+
+const connectedApp = connect(mapState, actionCreators)(App);
+export { connectedApp as App };
