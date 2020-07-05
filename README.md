@@ -4,7 +4,7 @@
 
 This project is a simple search app for team users.
 
-## Prerequisite
+## Installation
 
 In the project directory, you can run:
 
