@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This project is a simple search app for team users.
+This project is a simple app for employees.
 
 ## Installation
 
