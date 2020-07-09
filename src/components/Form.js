@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { employeeActions } from "../actions";
 import { useDispatch } from "react-redux";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Form = ({ employee, saveFlag }) => {
   const dispatch = useDispatch();
@@ -10,6 +12,14 @@ const Form = ({ employee, saveFlag }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEmployee({ ...state, [name]: value });
+  };
+
+  const handleBirthDateChange = (date) => {
+    setEmployee({ ...state, birth_date: date });
+  };
+
+  const handleHiredDateChange = (date) => {
+    setEmployee({ ...state, birth_date: date });
   };
 
   const handleSubmit = (e) => {
@@ -178,13 +188,20 @@ const Form = ({ employee, saveFlag }) => {
           )}
         </div>
         <div className="form-group">
-          <label htmlFor="birth_date">Birth Date</label>
-          <input
+          <div>
+            <label htmlFor="birth_date">Birth Date</label>
+          </div>
+          {/* <input
             type="text"
             name="birth_date"
             className="form-control"
             onChange={handleChange}
             value={birth_date}
+          /> */}
+          <DatePicker
+            selected={new Date(birth_date)}
+            onChange={handleBirthDateChange}
+            className="form-control"
           />
           {submitted && birth_date === "" && (
             <div
@@ -197,13 +214,20 @@ const Form = ({ employee, saveFlag }) => {
           )}
         </div>
         <div className="form-group">
-          <label htmlFor="hired_date">Hired Date</label>
-          <input
+          <div>
+            <label htmlFor="hired_date">Hired Date</label>
+          </div>
+          {/* <input
             type="text"
             name="hired_date"
             className="form-control"
             onChange={handleChange}
             value={hired_date}
+          /> */}
+          <DatePicker
+            selected={new Date(hired_date)}
+            onChange={handleHiredDateChange}
+            className="form-control"
           />
           {submitted && hired_date === "" && (
             <div

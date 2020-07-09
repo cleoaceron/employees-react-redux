@@ -2,7 +2,14 @@
   padding: 25px 20px 0px 0px;
   font-family: monospace;
 }
+
 .form-container {
   width: 50%;
   margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1200px;
+  }
 }
