@@ -1,121 +1,130 @@
-import React, { useState } from "react";
-import { userActions } from "../actions";
+import React, { useState, useMemo } from "react";
+import { employeeActions } from "../actions";
 import { useDispatch } from "react-redux";
+import DataTable from "react-data-table-component";
+import Form from "./Form";
 
-const Content = (props) => {
-  // initialize dispatch
+const Content = ({ employees, alert, view }) => {
   const dispatch = useDispatch();
-  // proceed search states
-  const search = (event) => {
-    let searchQuery = event.target.value;
-    dispatch(userActions.search(searchQuery));
+  const [formTrigger, setFormTrigger] = useState(0);
+  const [addOrUpdate, setAddOrUpdate] = useState("");
+  let employeeList =
+    employees.items.list !== undefined
+      ? employees.items.list.map((employee) =>
+          !employee.status
+            ? {
+                ...employee,
+                status: "Resigned",
+                name: `${employee.first_name} ${employee.middle_name} ${employee.last_name}`,
+              }
+            : {
+                ...employee,
+                status: "Active",
+                name: `${employee.first_name} ${employee.middle_name} ${employee.last_name}`,
+              }
+        )
+      : [];
+  const editEmployee = (id) => {
+    dispatch(employeeActions.viewEmployee(id));
+    setTimeout(function () {
+      setFormTrigger(!formTrigger ? true : false);
+      setAddOrUpdate({ addOrUpdate: "edit" });
+    }, 800);
   };
+  const addEmployee = () => {
+    dispatch(employeeActions.clearEmployee());
+    setFormTrigger(!formTrigger ? true : false);
+    setAddOrUpdate({ addOrUpdate: "add" });
+  };
+
+  const columns = useMemo(() => [
+    {
+      name: "Full Name",
+      selector: "name",
+      sortable: true,
+    },
+    {
+      name: "Nick Name",
+      selector: "nick_name",
+      sortable: true,
+      right: true,
+    },
+    {
+      name: "Department",
+      selector: "department",
+      sortable: true,
+      right: true,
+    },
+    {
+      name: "Position",
+      selector: "position",
+      sortable: true,
+      right: true,
+    },
+    {
+      name: "Birth Date",
+      selector: "birth_date",
+      sortable: true,
+      right: true,
+    },
+    {
+      name: "Hired Date",
+      selector: "hired_date",
+      sortable: true,
+      right: true,
+    },
+    {
+      name: "Email Address",
+      selector: "email_address",
+      sortable: true,
+      right: true,
+    },
+    {
+      name: "Status",
+      selector: "status",
+      sortable: true,
+      right: true,
+    },
+    {
+      name: "Actions",
+      cell: (row) => (
+        <button
+          className="btn btn-success"
+          onClick={() => editEmployee(row.uuid)}
+        >
+          Edit
+        </button>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
+  ]);
 
   return (
     <div>
-      <div className="wrapper">
-        <div className="search-container">
-          <input
-            type="text"
-            name="search"
-            placeholder="Search..."
-            onChange={(e) => search(e)}
-          />
-          <button type="button">
-            <i className="fas fa-search"></i>
-          </button>
+      {alert.message && (
+        <div className={`alert ${alert.type}`} role="alert">
+          <div className="alert-text">{alert.message}</div>
+          <div className="alert-close">
+            <i className="flaticon2-cross kt-icon-sm" data-dismiss="alert"></i>
+          </div>
         </div>
-        {/* Begin interate team users data */}
-        {!props.users.search ? (
-          <>
-            {props.users.users.map((user) => (
-              <div className="content-container" key={user.id}>
-                <div className="img-container">
-                  <img src="/avatar-default-icon.png" alt="default image" />
-                </div>
-                <div className="description">
-                  <label>
-                    <strong>Name:</strong>
-                  </label>
-                  <p>{user.name}</p>
-                  <label>
-                    <strong>Email:</strong>
-                  </label>
-                  <p>{user.email}</p>
-                  <label>
-                    <strong>Phone:</strong>
-                  </label>
-                  <p>{user.phone}</p>
-                  <label>
-                    <strong>Website:</strong>
-                  </label>
-                  <p>
-                    <a href={`http://${user.website}`}>{user.website}</a>
-                  </p>
-                  <label>
-                    <strong>Address:</strong>
-                  </label>
-                  <p>{`(${user.address.zipcode}) ${user.address.suite} ${user.address.street}, ${user.address.city}`}</p>
-                  <label>
-                    <strong>Company:</strong>
-                  </label>
-                  <p>{`${user.company.name} (${user.company.catchPhrase})`}</p>
-                </div>
-                <div className="clear"></div>
-              </div>
-            ))}
-          </>
-        ) : (
-          <>
-            {props.users.users.map((user) => (
-              <div key={user.id}>
-                {user.hint && (
-                  <div className="content-container">
-                    <>
-                      <div className="img-container">
-                        <img
-                          src="/avatar-default-icon.png"
-                          alt="default image"
-                        />
-                      </div>
-                      <div className="description">
-                        <label>
-                          <strong>Name:</strong>
-                        </label>
-                        <p>{user.name}</p>
-                        <label>
-                          <strong>Email:</strong>
-                        </label>
-                        <p>{user.email}</p>
-                        <label>
-                          <strong>Phone:</strong>
-                        </label>
-                        <p>{user.phone}</p>
-                        <label>
-                          <strong>Website:</strong>
-                        </label>
-                        <p>
-                          <a href={`http://${user.website}`}>{user.website}</a>
-                        </p>
-                        <label>
-                          <strong>Address:</strong>
-                        </label>
-                        <p>{`(${user.address.zipcode}) ${user.address.suite} ${user.address.street}, ${user.address.city}`}</p>
-                        <label>
-                          <strong>Company:</strong>
-                        </label>
-                        <p>{`${user.company.name} (${user.company.catchPhrase})`}</p>
-                      </div>
-                      <div className="clear"></div>
-                    </>
-                  </div>
-                )}
-              </div>
-            ))}
-          </>
-        )}
-        {/* End interate team users data */}
+      )}
+      <div style={{ textAlign: "right", margin: "25px 0px 15px 0px" }}>
+        <button className="btn btn-success" onClick={() => addEmployee()}>
+          {!formTrigger ? "Add New Employee" : "Back"}
+        </button>
       </div>
+      {!formTrigger && (
+        <DataTable
+          title="Employees"
+          columns={columns}
+          data={employeeList}
+          pagination={true}
+        />
+      )}
+      {formTrigger && <Form employee={view.employee} saveFlag={addOrUpdate} />}
     </div>
   );
 };

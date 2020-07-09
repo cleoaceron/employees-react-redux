@@ -1,4 +1,4 @@
 export function authHeader() {
   // return authorization header with jwt token
-  return { "Content-Type": "application/json" };
+  return { "Access-Control-Allow-Origin": "*", "Content-Type": "application/json" };
 }

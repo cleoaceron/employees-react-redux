@@ -1,4 +1,4 @@
-# REACT-Challenge
+# REACT REDUX Employees App.
 
 ## Introduction
 
